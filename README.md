@@ -22,9 +22,7 @@ Plugin Domoticz permettant de récupérer le prix d'un carburant dans une statio
 
 Les données proviennent de l'API publique :
 
-**Prix des carburants en France - Flux instantané v2**
-
-[data.economie.gouv.fr](https://data.economie.gouv.fr/?utm_source=chatgpt.com)
+[Prix des carburants en France - Flux instantané v2](https://www.data.gouv.fr/datasets/prix-des-carburants-en-france-flux-instantane-v2-amelioree)
 
 ---
 
@@ -85,7 +83,7 @@ Identifiant unique de la station-service.
 Exemple :
 
 ```text
-35137001
+35000023
 ```
 
 ### Carburant
@@ -112,7 +110,7 @@ Choix de la fréquence de mise à jour :
 
 Le moyen le plus simple consiste à utiliser le site officiel du gouvernement :
 
-[prix-carburants.gouv.fr](https://www.prix-carburants.gouv.fr/?utm_source=chatgpt.com)
+[prix-carburants.gouv.fr](https://www.prix-carburants.gouv.fr)
 
 ### Étapes
 
@@ -125,13 +123,13 @@ Le moyen le plus simple consiste à utiliser le site officiel du gouvernement :
 URL de la station :
 
 ```text
-https://www.prix-carburants.gouv.fr/station/35137001
+https://www.prix-carburants.gouv.fr/station/35000023
 ```
 
 L'ID de la station est :
 
 ```text
-35137001
+35000023
 ```
 
 C'est cette valeur qu'il faut renseigner dans le champ :
@@ -144,7 +142,7 @@ ID Station
 
 | Paramètre        | Valeur   |
 | ---------------- | -------- |
-| ID Station       | 35137001 |
+| ID Station       | 35000023 |
 | Carburant        | E85      |
 | Rafraîchissement | 1 heure  |
 
@@ -183,7 +181,7 @@ Le plugin interrogera alors automatiquement l'API officielle pour récupérer le
 Pour la station :
 
 ```text
-35137001
+35000023
 ```
 
 avec le carburant :
