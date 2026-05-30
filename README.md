@@ -154,25 +154,25 @@ Le plugin interrogera alors automatiquement l'API officielle pour récupérer le
 
 ### Configuration du matériel
 
-![Configuration](docs/images/configuration.png)
+<img width="1178" height="537" alt="image" src="https://github.com/user-attachments/assets/15ca590e-a1e1-4ce1-bb07-0a56bfe460dc" />
 
 ---
 
 ### Device créé dans Domoticz
 
-![Device](docs/images/device.png)
+<img width="1851" height="67" alt="image" src="https://github.com/user-attachments/assets/97bcb355-b582-41c0-a3af-cccb8f45b012" />
 
 ---
 
 ### Exemple de valeur affichée
 
-![Valeur](docs/images/value.png)
+<img width="389" height="171" alt="image" src="https://github.com/user-attachments/assets/5213d15a-9db0-4908-a098-22f3b6fe4259" />
 
 ---
 
 ### Historique du prix
 
-![Historique](docs/images/history.png)
+Pas d'image
 
 ---
 
