@@ -1,14 +1,19 @@
 # FuelPrice Domoticz Plugin
 
-Plugin Domoticz permettant de récupérer le prix d'un carburant dans une station-service française à partir de l'API officielle du gouvernement français.
+Plugin Domoticz permettant de récupérer le prix d'un carburant dans une station-service française à partir de l'API officielle du gouvernement français, et de trouver automatiquement la station la moins chère dans un rayon donné.
 
 ## Fonctionnalités
 
 * Récupération du prix d'un carburant pour une station donnée.
+* Recherche automatique de la station la moins chère dans un rayon configurable.
+* Affichage du Top 3 des stations les moins chères avec distance et fraîcheur du prix.
+* Filtrage automatique des stations fermées (définitivement ou temporairement).
+* Filtrage des prix périmés (données de plus de 7 jours exclues).
+* Affichage des informations et du statut de la station configurée.
+* Conservation des dernières valeurs connues en cas d'indisponibilité de l'API.
 * Utilisation de l'API officielle « Prix des carburants en France ».
 * Choix du carburant directement depuis l'interface Domoticz.
 * Rafraîchissement automatique configurable.
-* Affichage du prix dans un capteur Domoticz.
 * Compatible avec les carburants suivants :
 
   * Gazole
@@ -36,10 +41,11 @@ Créer le répertoire :
 domoticz/plugins/FuelPrice/
 ```
 
-Puis copier le fichier :
+Puis copier les fichiers :
 
 ```text
 plugin.py
+README.md
 ```
 
 dans ce répertoire.
@@ -69,7 +75,7 @@ Réglages → Matériel
 Sélectionner :
 
 ```text
-Fuel Price France
+Prix Carburant France
 ```
 
 ---
@@ -95,14 +101,28 @@ Liste disponible :
 * E10
 * SP98
 
+### Rayon
+
+Rayon de recherche pour trouver la station la moins chère :
+
+* 5 km
+* 10 km (défaut)
+* 20 km
+* 30 km
+* 50 km
+
 ### Rafraîchissement
 
 Choix de la fréquence de mise à jour :
 
 * 15 minutes
 * 30 minutes
-* 1 heure
+* 1 heure (défaut)
 * 2 heures
+
+### Debug
+
+Active les logs détaillés dans Domoticz (URLs appelées, stations ignorées, prix périmés).
 
 ---
 
@@ -144,56 +164,57 @@ ID Station
 | ---------------- | -------- |
 | ID Station       | 35000023 |
 | Carburant        | E85      |
+| Rayon            | 10 km    |
 | Rafraîchissement | 1 heure  |
 
-Le plugin interrogera alors automatiquement l'API officielle pour récupérer le prix du carburant sélectionné. Les données du site prix-carburants.gouv.fr et de l'API gouvernementale proviennent de la même source officielle.
-
 ---
 
-## Captures d'écran
+## Devices créés
 
-### Configuration du matériel
+Le plugin crée automatiquement 5 devices dans Domoticz :
 
-<img width="1178" height="537" alt="image" src="https://github.com/user-attachments/assets/15ca590e-a1e1-4ce1-bb07-0a56bfe460dc" />
+| Unit | Nom                          | Type          | Description                                              |
+|------|------------------------------|---------------|----------------------------------------------------------|
+| 1    | Prix {carburant} station     | Custom Sensor | Prix en €/L de la station configurée                     |
+| 2    | Meilleur {carburant} rayon   | Custom Sensor | Meilleur prix trouvé dans le rayon                       |
+| 3    | Station {carburant} moins chère | Text       | Ville et adresse de la station la moins chère            |
+| 4    | Top 3 {carburant}            | Text          | Les 3 stations les moins chères avec distance et âge du prix |
+| 5    | Station {carburant} infos    | Text          | Adresse et statut (ouverte/fermée) de la station configurée |
 
----
-
-### Device créé dans Domoticz
-
-<img width="1851" height="67" alt="image" src="https://github.com/user-attachments/assets/97bcb355-b582-41c0-a3af-cccb8f45b012" />
-
----
-
-### Exemple de valeur affichée
-
-<img width="389" height="171" alt="image" src="https://github.com/user-attachments/assets/5213d15a-9db0-4908-a098-22f3b6fe4259" />
-
----
-
-### Historique du prix
-
-Pas d'image
-
----
-
-## Exemple de résultat
-
-Pour la station :
+### Exemple d'affichage du Top 3
 
 ```text
-35000023
+1. Pleumeleuc 0.0km 1.955 auj. | 2. Breteil 4.6km 1.955 J-2 | 3. Montauban-de-Bretagne 9.1km 1.959 J-1
 ```
 
-avec le carburant :
+---
+
+## Filtres appliqués
+
+### Stations fermées
+
+Les stations marquées comme fermées définitivement (`D`) ou temporairement (`T`) dans l'API sont automatiquement exclues du classement. Le statut de la station configurée est affiché dans le Device 5.
+
+### Prix périmés
+
+Tout prix dont la date de mise à jour dépasse 7 jours est ignoré. Cela évite d'afficher des tarifs obsolètes dans le classement.
+
+### Résilience réseau
+
+En cas d'indisponibilité temporaire de l'API, le plugin conserve les dernières valeurs connues dans les devices au lieu de les vider.
+
+---
+
+## Journal Domoticz
+
+Exemples de messages :
 
 ```text
-E85
-```
-
-Le plugin affichera :
-
-```text
-0.789 €/L
+FuelPrice: Starting plugin
+FuelPrice: Station configurée : 35000023
+FuelPrice: Station : Pleumeleuc - 2 Rue de l'Epinette (ouverte)
+FuelPrice: Nouvelle station la moins chère : Pleumeleuc - 2 Rue de l'Epinette (1.955 €/L)
+FuelPrice: Erreur réseau — conservation des dernières valeurs connues
 ```
 
 ---
@@ -203,23 +224,7 @@ Le plugin affichera :
 ```text
 FuelPrice/
 ├── plugin.py
-├── README.md
-└── docs/
-    └── images/
-        ├── configuration.png
-        ├── device.png
-        ├── value.png
-        └── history.png
-```
-
----
-
-## Journal Domoticz
-
-Exemple de message :
-
-```text
-Fuel Price France: E85 = 0.789 €/L
+└── README.md
 ```
 
 ---
@@ -228,6 +233,7 @@ Fuel Price France: E85 = 0.789 €/L
 
 * Domoticz
 * Framework Python Plugins
+* Python 3.6+
 * Linux
 * Raspberry Pi
 
